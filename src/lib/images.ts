@@ -1,7 +1,3 @@
-import bgCheckin from "../../public/images/bg-checkin.jpg";
-import bgDatPhong from "../../public/images/bg-dat-phong.jpg";
-import bgHero from "../../public/images/bg-hero.jpg";
-import bgPhong from "../../public/images/bg-phong.jpg";
 import bep402 from "../../public/images/bep-402.jpg";
 import logoMark from "../../public/images/logo-mark.jpg";
 import mayBanCong from "../../public/images/may-ban-cong.jpg";
@@ -18,13 +14,37 @@ import room501 from "../../public/images/room-501.jpg";
 import room601 from "../../public/images/room-601.jpg";
 import room602 from "../../public/images/room-602.jpg";
 import room702 from "../../public/images/room-702.jpg";
+import posterMay from "../../public/images/poster-may.jpg";
+import posterMeo from "../../public/images/poster-meo.jpg";
+import posterRetro from "../../public/images/poster-retro.jpg";
+import posterPuzzle from "../../public/images/poster-puzzle.jpg";
+import poster201 from "../../public/images/poster-201.jpg";
+import poster202 from "../../public/images/poster-202.jpg";
+import poster401 from "../../public/images/poster-401.jpg";
+import poster402 from "../../public/images/poster-402.jpg";
+import poster501 from "../../public/images/poster-501.jpg";
+import poster502 from "../../public/images/poster-502.jpg";
+import poster601 from "../../public/images/poster-601.jpg";
+import poster602 from "../../public/images/poster-602.jpg";
+import poster702 from "../../public/images/poster-702.jpg";
+import room502 from "../../public/images/room-502.jpg";
 
 export const img = {
+  posterMay,
+  posterMeo,
+  posterRetro,
+  posterPuzzle,
+  poster201,
+  poster202,
+  poster401,
+  poster402,
+  poster501,
+  poster502,
+  poster601,
+  poster602,
+  poster702,
+  room502,
   bep402,
-  bgCheckin,
-  bgDatPhong,
-  bgHero,
-  bgPhong,
   logoMark,
   mayBanCong,
   mayBep,

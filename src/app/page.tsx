@@ -1,5 +1,4 @@
 import Image, { type StaticImageData } from "next/image";
-import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { BookingForm, BookingProvider } from "@/components/booking";
 import { Lightbox } from "@/components/lightbox";
@@ -19,22 +18,18 @@ import {
 
 const branchCards: Record<
   BranchName,
-  { image?: StaticImageData; alt?: string; position?: string; desc: string }
+  { image?: StaticImageData; alt?: string; position?: string }
 > = {
   "Khâm Thiên": {
     image: img.mayBanCong,
     alt: "Ban công phòng Mây Chill ở cơ sở Khâm Thiên",
     position: "object-[85%_center]",
-    desc: "Bốn phòng theo chủ đề: Mây, Mèo, Retro Pop và Puzzle.",
   },
-  "Thanh Xuân": {
-    desc: "Nhắn Zalo để xem ảnh và phòng trống của cơ sở này.",
-  },
+  "Thanh Xuân": {},
   "Long Biên": {
     image: img.room601,
     alt: "Room 601 ở cơ sở Long Biên, cửa kính mở ra ban công",
     position: "object-[12%_center]",
-    desc: "Các phòng từ tầng 2 đến tầng 7, có phòng ban công.",
   },
 };
 
@@ -91,26 +86,6 @@ const packageBadges: Record<
   "24h": { hours: "24h", night: true },
 };
 
-// Một quy trình có thứ tự thật, nên các bước được đánh số.
-const steps = [
-  {
-    title: "Chọn phòng và gói giờ",
-    desc: "Xem bảng giá, chọn cơ sở, loại phòng và khung giờ bạn cần.",
-  },
-  {
-    title: "Nhắn Zalo để giữ phòng",
-    desc: "Gửi yêu cầu ở cuối trang. 4Chan xác nhận phòng trống và giá.",
-  },
-  {
-    title: "Nhận hướng dẫn check-in",
-    desc: "Địa chỉ, đường vào và cách mở cửa được gửi riêng qua Zalo.",
-  },
-  {
-    title: "Tự vào phòng, tự trả phòng",
-    desc: "Đến nơi là vào thẳng phòng. Hết giờ thì khép cửa và ra về.",
-  },
-];
-
 const faqs = [
   {
     q: "Tự check-in nghĩa là sao, có cần gặp lễ tân không?",
@@ -125,18 +100,87 @@ const faqs = [
     a: `Mỗi giờ ở thêm ngoài thời gian của gói tính ${EXTRA_HOUR}k.`,
   },
   {
-    q: "Gói 3 giờ và gói 12 giờ bắt đầu tính từ lúc nào?",
-    a: "Hai gói này tính từ lúc bạn nhận phòng. Các gói còn lại có khung giờ cố định ghi trong bảng giá.",
-  },
-  {
-    q: "Phòng cửa sổ và phòng ban công khác nhau thế nào?",
-    a: "Phòng ban công có cửa kính mở ra ban công riêng, giá cao hơn phòng cửa sổ từ 30k đến 90k tuỳ gói.",
-  },
-  {
     q: "Trong phòng có những gì?",
     a: "Đệm cao su non, máy lạnh hai chiều, toilet khép kín, bếp mini và tủ lạnh. Nhiều phòng có máy chiếu và sofa.",
   },
 ];
+
+// Những việc khách hay làm trong phòng, kèm ảnh thật của góc đó. Ảnh đầu
+// chiếm ô lớn của lưới.
+const moments = [
+  {
+    src: img.room201,
+    alt: "Màn chiếu lớn sát giường ở Room 201",
+    label: "Xem phim tại giường",
+  },
+  {
+    src: img.mayBep,
+    alt: "Bếp mini phòng Mây Chill",
+    label: "Nấu ăn ở bếp mini",
+  },
+  {
+    src: img.mayBanCong,
+    alt: "Ban công phòng Mây Chill nhìn ra mái phố",
+    label: "Ngắm phố từ ban công",
+  },
+  {
+    src: img.room501,
+    alt: "Sofa đôi cạnh cửa kính ở Room 501",
+    label: "Nằm dài trên sofa",
+  },
+  {
+    src: img.meoDecor,
+    alt: "Bộ bát đĩa in hình mèo ở phòng Mèo Chill",
+    label: "Trà chiều nhà mèo",
+  },
+];
+
+function DateIdeas() {
+  return (
+    <section className="fc-ondark relative overflow-hidden bg-deep py-[clamp(48px,6vw,84px)] text-cream">
+      <Wave flip className="absolute inset-x-0 -top-px text-blush" />
+      <Wave className="absolute inset-x-0 -bottom-px z-1 text-blush" />
+      <div className="fc-container">
+        <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+          <h2 className="fc-reveal fc-from-left fc-h2">
+            Một buổi hẹn, đủ trò để làm
+          </h2>
+          <a
+            className="fc-btn fc-reveal bg-cream px-7 text-ink"
+            href="#dat-phong"
+          >
+            Đặt phòng
+          </a>
+        </div>
+        <div className="mt-6 grid grid-cols-2 gap-3 nav:h-[clamp(380px,52svh,460px)] nav:grid-cols-4 nav:grid-rows-2 nav:gap-4">
+          {moments.map((m, i) => (
+            <figure
+              key={m.label}
+              style={{ transitionDelay: `${i * 130}ms` }}
+              className={`fc-reveal fc-zoom-in group relative overflow-hidden rounded-[20px] ${i === 0 ? "col-span-2 max-nav:aspect-[4/3] nav:row-span-2" : "max-nav:aspect-square"}`}
+            >
+              <Image
+                src={m.src}
+                alt={m.alt}
+                fill
+                quality={90}
+                sizes={
+                  i === 0
+                    ? "(min-width: 860px) 600px, 100vw"
+                    : "(min-width: 860px) 300px, 50vw"
+                }
+                className="fc-zoomable object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
+              />
+              <figcaption className="pointer-events-none absolute bottom-2.5 left-2.5 rounded-full bg-cream px-3 py-1 font-hand text-[15px] leading-tight text-ink nav:bottom-3 nav:left-3 nav:text-[17px]">
+                {m.label}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function Icon({
   size,
@@ -205,18 +249,41 @@ function Wordmark() {
   );
 }
 
-// Ảnh phòng làm nền cho cả dải, trôi chậm theo cuộn trang. `shade` là lớp
-// phủ màu để chữ phía trên đọc được.
-function Backdrop({ src, shade }: { src: StaticImageData; shade: string }) {
+// Nền ghép từ tám ảnh phòng. Mỗi ô nhỏ hơn kích thước gốc của ảnh nên nền
+// luôn nét, khác với một ảnh duy nhất bị phóng to ra cả màn hình. `shade` là
+// lớp phủ màu để chữ phía trên đọc được.
+const wall = [
+  img.room702,
+  img.room401,
+  img.room202,
+  img.room601,
+  img.room402,
+  img.room501,
+  img.room602,
+  img.room201,
+];
+
+function PhotoWall({ shade, eager }: { shade: string; eager?: boolean }) {
   return (
     <>
-      <Image
-        src={src}
-        alt=""
-        fill
-        sizes="100vw"
-        className="fc-parallax object-cover"
-      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 grid grid-cols-2 grid-rows-4 nav:grid-cols-4 nav:grid-rows-2"
+      >
+        {wall.map((src, i) => (
+          <div key={i} className="relative overflow-hidden">
+            <Image
+              src={src}
+              alt=""
+              fill
+              quality={90}
+              preload={eager && i < 4}
+              sizes="(min-width: 860px) 25vw, 50vw"
+              className="object-cover"
+            />
+          </div>
+        ))}
+      </div>
       <div className={`absolute inset-0 ${shade}`} />
     </>
   );
@@ -256,20 +323,15 @@ export default function Home() {
         id="top"
         className="fc-ondark relative flex min-h-svh flex-col overflow-hidden bg-deep pt-[84px] text-cream nav:h-svh nav:min-h-[600px]"
       >
-        <Image
-          src={img.bgHero}
-          alt=""
-          fill
-          preload
-          sizes="100vw"
-          className="fc-kenburns object-cover object-[center_60%]"
+        <PhotoWall
+          eager
+          shade="bg-[radial-gradient(ellipse_at_center,rgba(39,45,32,0.86)_0%,rgba(39,45,32,0.7)_45%,rgba(39,45,32,0.42)_100%)]"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(39,45,32,0.84)_0%,rgba(39,45,32,0.55)_46%,rgba(39,45,32,0.12)_100%)]" />
         <header className="fc-header fixed inset-x-0 top-0 z-30">
           <div className="fc-header-bar fc-container flex items-center justify-between gap-5 py-[18px]">
-            <Link href="/" aria-label="4Chan Homestay – về trang chủ">
+            <a href="#top" aria-label="4Chan Homestay – về đầu trang">
               <Wordmark />
-            </Link>
+            </a>
             <nav
               aria-label="Điều hướng chính"
               className="hidden gap-[30px] text-[15px] font-medium nav:flex"
@@ -301,69 +363,47 @@ export default function Home() {
           </div>
         </header>
 
-        <div className="fc-container grid w-full grow content-center items-center gap-x-10 gap-y-7 pt-2 pb-[clamp(96px,7vw,84px)] nav:grid-cols-[1.1fr_0.9fr] nav:pb-[clamp(48px,6vw,80px)]">
-          <div className="fc-rise">
-            <h1 className="font-display text-[clamp(32px,min(5.4vw,8svh),66px)] leading-[1.06] font-bold tracking-[-0.02em] text-balance">
-              Một chỗ riêng cho hai người, thuê theo giờ
+        <div className="fc-container flex w-full grow flex-col items-center justify-center pb-[clamp(40px,8svh,96px)] text-center">
+          <div className="fc-rise flex max-w-[1000px] flex-col items-center">
+            <Image
+              src={img.logoMark}
+              alt="Logo 4Chan Homestay"
+              sizes="120px"
+              className="mb-5 size-[clamp(76px,min(9vw,13svh),112px)] rounded-[24%] bg-cream object-contain p-2 shadow-[0_18px_30px_-16px_rgba(0,0,0,0.7)]"
+            />
+            <h1 className="[text-shadow:0_2px_22px_rgba(39,45,32,0.55)]">
+              <span className="block font-serif text-[clamp(36px,min(5.4vw,8.6svh),74px)] leading-[1.02] font-semibold tracking-[-0.01em] text-balance">
+                Một chỗ riêng cho hai người
+              </span>
+              <span className="mt-1 block font-script text-[clamp(40px,min(6.6vw,9.6svh),86px)] leading-[1.05] text-sand">
+                thuê theo giờ
+              </span>
             </h1>
-            <p className="mt-4 max-w-[31em] text-[clamp(15px,1.5vw,17px)]">
-              4Chan Homestay có ba cơ sở ở Khâm Thiên, Thanh Xuân và Long Biên.
-              Bạn tự check-in, tự trả phòng, không qua lễ tân. Giá từ 249k cho 3
-              giờ.
+            <p className="mt-5 flex items-center gap-4 text-[clamp(15px,1.5vw,18px)] font-medium tracking-[0.05em] whitespace-nowrap">
+              <span
+                aria-hidden="true"
+                className="h-px w-12 bg-cream/60 max-[479px]:hidden"
+              />
+              Tự check-in. Từ 249k cho 3 giờ.
+              <span
+                aria-hidden="true"
+                className="h-px w-12 bg-cream/60 max-[479px]:hidden"
+              />
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
               <a className="fc-btn min-h-12 px-7 text-base" href="#dat-phong">
                 Đặt phòng
               </a>
               <a
                 className="fc-btn fc-btn-quiet min-h-12 border-cream px-7 text-base text-cream"
-                href="#bang-gia"
+                href="#phong"
               >
-                Xem bảng giá
+                Xem phòng
               </a>
             </div>
           </div>
-
-          <div
-            className="fc-rise relative mx-auto w-full max-w-[min(460px,31svh)] pb-5 pl-[12%] nav:max-w-[min(460px,56svh)]"
-            style={{ animationDelay: "0.18s" }}
-          >
-            <Image
-              src={img.room702}
-              alt="Room 702 của 4Chan Homestay: mảng tường vòm xanh, sofa đơn và cửa sổ nhìn ra phố"
-              preload
-              sizes="(min-width: 860px) 400px, 80vw"
-              placeholder="blur"
-              style={{ "--ar": 0.8, "--r": "22px" } as CSSProperties}
-              className="fc-arch fc-zoomable aspect-4/5 w-full object-cover object-[38%_center]"
-            />
-            <Image
-              src={img.room401}
-              alt="Room 401: sofa da cam và cửa kính mở ra ban công"
-              sizes="180px"
-              style={{ "--ar": 0.8 } as CSSProperties}
-              className="fc-arch fc-zoomable absolute bottom-0 left-0 aspect-4/5 w-[38%] border-[5px] border-cream object-cover object-[28%_center]"
-            />
-            <p className="absolute -right-5 bottom-9 w-[62%] nav:-right-1 nav:bottom-12 nav:w-[46%] rotate-[4deg] rounded-md bg-cream px-3.5 py-3 text-center font-hand text-ink text-[clamp(13px,1.5vw,15.5px)] leading-[1.4] shadow-[0_16px_26px_-16px_rgba(39,45,32,0.6)]">
-              Đáng giá không phải vì đi đâu, mà vì ở cùng ai.
-            </p>
-          </div>
         </div>
       </section>
-
-      <div className="fc-container flex justify-center pt-[clamp(18px,2.5vw,30px)]">
-        <div className="fc-reveal flex items-center justify-center gap-x-[clamp(8px,2.6vw,28px)] rounded-full bg-ink px-[clamp(16px,4vw,40px)] py-3 font-hand text-[clamp(15px,2.2vw,22px)] leading-[1.2] whitespace-nowrap text-cream">
-          <span>Riêng tư</span>
-          <span className="text-peach" aria-hidden="true">
-            +
-          </span>
-          <span>Kín đáo</span>
-          <span className="text-peach" aria-hidden="true">
-            +
-          </span>
-          <span>Sạch sẽ</span>
-        </div>
-      </div>
 
       <section id="gioi-thieu" className="fc-paper fc-section">
         <div className="fc-container flex flex-wrap items-center gap-[clamp(32px,6vw,80px)]">
@@ -372,16 +412,13 @@ export default function Home() {
               Không gian cho những cuộc hẹn đáng nhớ
             </h2>
             <p className="fc-lede">
-              Có những khoảng thời gian đáng giá không phải vì đi đâu, mà vì ở
-              cùng ai. 4Chan là một không gian đủ riêng tư để nghỉ ngơi, trò
-              chuyện và tận hưởng trọn vẹn từng khoảnh khắc bên nhau.
+              Đáng giá không phải vì đi đâu, mà vì ở cùng ai.
             </p>
             <div className="mt-7 grid grid-cols-3 gap-3 sm:gap-6">
               {[
                 {
                   icon: lockPath,
                   title: "Tự check-in, tự trả phòng",
-                  desc: "Không quầy lễ tân, không phải chờ",
                 },
                 {
                   icon: (
@@ -392,7 +429,6 @@ export default function Home() {
                     </>
                   ),
                   title: "Riêng tư, kín đáo",
-                  desc: "Phòng khép kín, toilet trong phòng",
                 },
                 {
                   icon: (
@@ -402,16 +438,12 @@ export default function Home() {
                     </>
                   ),
                   title: "Sạch sẽ, gọn gàng",
-                  desc: "Đệm cao su non, máy lạnh hai chiều",
                 },
               ].map((fact) => (
                 <div key={fact.title} className="flex flex-col gap-2">
                   <Icon size={38}>{fact.icon}</Icon>
                   <div className="text-sm leading-[1.3] font-semibold sm:text-base">
                     {fact.title}
-                  </div>
-                  <div className="text-[12.5px] leading-snug sm:text-sm">
-                    {fact.desc}
                   </div>
                 </div>
               ))}
@@ -421,6 +453,7 @@ export default function Home() {
             <Image
               src={img.room501}
               alt="Room 501: sofa đôi màu be, giường thấp và cửa kính mở ra ban công"
+              quality={90}
               sizes="(min-width: 860px) 520px, 100vw"
               className="fc-zoomable aspect-4/3 w-full rounded-[28px] object-cover"
             />
@@ -436,40 +469,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        id="phong"
-        className="relative overflow-hidden bg-deep py-[clamp(48px,6vw,80px)]"
-      >
-        <Backdrop
-          src={img.bgPhong}
-          shade="bg-[linear-gradient(180deg,rgba(39,45,32,0.74)_0%,rgba(39,45,32,0.28)_38%,rgba(39,45,32,0.16)_100%)]"
-        />
-        <Wave flip className="absolute inset-x-0 -top-px text-blush" />
-        <Wave className="absolute inset-x-0 -bottom-px text-blush" />
-        <div className="fc-container">
-          <h2 className="fc-reveal fc-from-left fc-h2 text-cream">
-            Mỗi phòng một kiểu, chọn theo ý bạn
-          </h2>
-          <p className="fc-lede text-cream">
-            Chọn cơ sở rồi bấm vào từng phòng để xem. Tất cả là ảnh chụp phòng
-            thật.
-          </p>
-          <RoomShowcase />
-        </div>
-      </section>
+      <RoomShowcase />
 
       <section id="bang-gia" className="fc-paper fc-section">
         <div className="fc-container grid items-start gap-x-[clamp(28px,4vw,56px)] gap-y-7 nav:grid-cols-[0.78fr_1.6fr]">
           <div className="nav:sticky nav:top-8">
             <h2 className="fc-reveal fc-from-left fc-h2">Bảng giá theo giờ</h2>
-            <p className="fc-lede">
-              Giá cho một phòng, áp dụng ở cả ba cơ sở. Phòng ban công có cửa
-              kính mở ra ban công riêng.
-            </p>
+            <p className="fc-lede">Áp dụng ở cả ba cơ sở.</p>
             <dl className="fc-reveal mt-5 grid grid-cols-2 gap-3 nav:grid-cols-1">
               {[
-                [`+${WEEKEND_SURCHARGE}k`, "Thứ 6 và Thứ 7, cho mọi gói"],
-                [`+${EXTRA_HOUR}k`, "Mỗi giờ ở thêm ngoài thời gian của gói"],
+                [`+${WEEKEND_SURCHARGE}k`, "Thứ 6, Thứ 7"],
+                [`+${EXTRA_HOUR}k`, "Mỗi giờ ở thêm"],
               ].map(([amount, note]) => (
                 <div
                   key={amount}
@@ -511,7 +521,7 @@ export default function Home() {
               return (
                 <li
                   key={pkg.id}
-                  style={{ transitionDelay: `${(i % 2) * 90}ms` }}
+                  style={{ transitionDelay: `${(i % 2) * 160}ms` }}
                   className="fc-reveal fc-lift flex items-center gap-2 border-line px-3 py-2 max-[559px]:border-t min-[560px]:flex-col min-[560px]:border min-[560px]:bg-white min-[560px]:items-stretch min-[560px]:gap-3.5 min-[560px]:rounded-[24px] min-[560px]:p-4"
                 >
                   <div className="flex min-w-0 grow items-center gap-2.5 min-[560px]:gap-3.5">
@@ -554,48 +564,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-sage py-[clamp(48px,6vw,80px)]">
-        <Backdrop
-          src={img.bgCheckin}
-          shade="bg-[linear-gradient(90deg,rgba(181,190,163,0.92)_0%,rgba(181,190,163,0.7)_42%,rgba(181,190,163,0.22)_100%)]"
-        />
-        <Wave flip className="absolute inset-x-0 -top-px text-blush" />
-        <Wave className="absolute inset-x-0 -bottom-px text-blush" />
-        <div className="fc-container">
-          <h2 className="fc-reveal fc-from-left fc-h2">
-            Tự check-in trong bốn bước
-          </h2>
-          <p className="fc-lede text-ink">
-            Từ lúc đặt đến lúc về, bạn không cần gặp ai. Thông tin đặt phòng chỉ
-            dùng để giữ phòng và gửi hướng dẫn cho bạn.
-          </p>
-          <ol className="mt-6 grid gap-2.5 min-[560px]:gap-4 min-[560px]:grid-cols-2 nav:grid-cols-4">
-            {steps.map((step, i) => (
-              <li
-                key={step.title}
-                style={{ transitionDelay: `${i * 70}ms` }}
-                className="fc-reveal flex items-start gap-3.5 rounded-[20px] bg-cream p-3.5 min-[560px]:flex-col min-[560px]:gap-2 min-[560px]:rounded-[22px] min-[560px]:p-5"
-              >
-                <span
-                  aria-hidden="true"
-                  style={{ "--ar": 0.8, "--r": "8px" } as CSSProperties}
-                  className="fc-arch fc-pop flex h-[50px] w-10 shrink-0 items-end justify-center bg-peach pb-1.5 font-display text-xl font-bold text-white"
-                >
-                  {i + 1}
-                </span>
-                <div className="min-w-0">
-                  <h3 className="font-display text-[17px] leading-snug font-bold min-[560px]:mt-1 min-[560px]:text-lg">
-                    {step.title}
-                  </h3>
-                  <p className="mt-0.5 text-[14px] text-muted min-[560px]:mt-2 min-[560px]:text-[14.5px]">
-                    {step.desc}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      <DateIdeas />
 
       <section id="co-so" className="fc-paper fc-section">
         <div className="fc-container">
@@ -606,7 +575,7 @@ export default function Home() {
               return (
                 <article
                   key={branch.name}
-                  style={{ transitionDelay: `${i * 70}ms` }}
+                  style={{ transitionDelay: `${i * 130}ms` }}
                   className={`fc-reveal ${["fc-from-left", "", "fc-from-right"][i]} flex items-center gap-4 rounded-[22px] border border-line bg-white p-3.5`}
                 >
                   {card.image ? (
@@ -633,7 +602,6 @@ export default function Home() {
                       Homestay theo giờ {branch.name}
                     </h3>
                     <div className="text-sm font-medium">{branch.address}</div>
-                    <div className="text-sm text-muted">{card.desc}</div>
                     <a
                       href={branch.maps}
                       target="_blank"
@@ -662,7 +630,7 @@ export default function Home() {
             {gallery.map((shot, i) => (
               <figure
                 key={shot.caption}
-                style={{ transitionDelay: `${(i % 3) * 70}ms` }}
+                style={{ transitionDelay: `${(i % 3) * 130}ms` }}
                 className={`fc-reveal fc-zoom-in fc-polaroid relative bg-white px-[clamp(7px,1vw,11px)] pt-[clamp(7px,1vw,11px)] pb-2.5 shadow-[0_18px_30px_-16px_rgba(39,45,32,0.5)] ${shot.tilt}`}
               >
                 <span
@@ -695,7 +663,7 @@ export default function Home() {
       </section>
 
       <section className="fc-ondark relative overflow-hidden bg-deep pt-[clamp(44px,5vw,64px)] pb-[clamp(32px,3.4vw,44px)]">
-        <Backdrop src={img.bgDatPhong} shade="bg-deep/70" />
+        <PhotoWall shade="bg-deep/85" />
         <Wave flip className="absolute inset-x-0 -top-px text-blush" />
         <div className="fc-container grid gap-x-[clamp(28px,4vw,56px)] gap-y-8 nav:grid-cols-[0.92fr_1.08fr]">
           <div className="fc-reveal fc-from-left flex flex-col">
@@ -760,18 +728,17 @@ export default function Home() {
 
       <footer
         id="lien-he"
-        className="fc-footer relative bg-blush pt-[clamp(48px,5.5vw,84px)] text-[14.5px] text-ink"
+        className="fc-footer relative bg-blush pt-6 text-[14.5px] text-ink"
       >
-        <Wave flip className="absolute inset-x-0 -top-px text-deep" />
-        <div className="fc-container grid gap-x-10 gap-y-7 nav:grid-cols-[1fr_1.3fr_1.2fr]">
-          <div className="flex flex-col items-start gap-3">
-            <Link
-              href="/"
-              aria-label="4Chan Homestay – về trang chủ"
+        <div className="fc-container grid gap-x-10 gap-y-5 nav:grid-cols-[1fr_1.3fr_1.2fr]">
+          <div className="flex flex-col items-start gap-1.5">
+            <a
+              href="#top"
+              aria-label="4Chan Homestay – về đầu trang"
               className="fc-link"
             >
               <Wordmark />
-            </Link>
+            </a>
             <span>Homestay theo giờ, tự check-in tại Hà Nội</span>
             <div className="flex flex-wrap gap-x-5">
               {[
@@ -792,7 +759,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-1.5">
             <div className="font-display text-lg font-bold">Liên hệ</div>
             {BRANCHES.map((branch) => (
               <div key={branch.name} className="flex gap-2.5">
@@ -834,7 +801,7 @@ export default function Home() {
               title="Bản đồ 4Chan Homestay, 107 Ngõ Văn Hương, Khâm Thiên, Hà Nội"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="block h-[190px] w-full border-0"
+              className="block h-[150px] w-full border-0"
             />
             <a
               href={SITE.maps}
@@ -846,7 +813,7 @@ export default function Home() {
             </a>
           </div>
         </div>
-        <div className="fc-container mt-6 border-t border-ink/20 pt-4 text-[13.5px]">
+        <div className="fc-container mt-4 border-t border-ink/20 pt-3 text-[13.5px]">
           © 2026 {SITE.name}
         </div>
       </footer>

@@ -305,23 +305,19 @@ export function BookingForm() {
         </div>
       </div>
 
-      <div className="mt-3.5 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-xl bg-sage-soft px-4 py-3 nav:mt-3 nav:py-2">
-        <div aria-live="polite">
+      <div className="mt-3.5 flex flex-wrap items-center justify-between gap-x-5 gap-y-3 rounded-xl bg-sage-soft px-4 py-3 nav:mt-3 nav:flex-nowrap nav:py-2">
+        <div aria-live="polite" className="min-w-0">
           <div className="text-[13px] text-muted">
-            Tạm tính, phòng {b.type.toLowerCase()}, {pkg.label.toLowerCase()}
+            Tạm tính
+            {weekend && `, đã gồm +${WEEKEND_SURCHARGE}k Thứ 6, Thứ 7`}
           </div>
           <div className="font-display text-[26px] leading-tight font-bold nav:text-[22px]">
             {price}k
-            {weekend && (
-              <span className="ml-2 font-sans text-[13px] font-medium text-muted">
-                đã gồm +{WEEKEND_SURCHARGE}k Thứ 6, Thứ 7
-              </span>
-            )}
           </div>
         </div>
         <button
           type="submit"
-          className="fc-btn min-h-12 flex-[1_1_200px] cursor-pointer text-base nav:min-h-11 nav:flex-none nav:px-7 nav:text-[15px]"
+          className="fc-btn min-h-12 flex-[1_1_200px] cursor-pointer text-base nav:min-h-11 nav:flex-none nav:shrink-0 nav:px-7 nav:text-[15px]"
         >
           Gửi yêu cầu đặt phòng
         </button>

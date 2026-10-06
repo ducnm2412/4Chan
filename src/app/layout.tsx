@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro, Patrick_Hand, Quicksand } from "next/font/google";
+import {
+  Be_Vietnam_Pro,
+  Cormorant_Garamond,
+  Dancing_Script,
+  Patrick_Hand,
+  Quicksand,
+} from "next/font/google";
 import "./globals.css";
 
 const beVietnam = Be_Vietnam_Pro({
@@ -19,9 +25,21 @@ const hand = Patrick_Hand({
   weight: "400",
 });
 
+// Hai font riêng cho tiêu đề hero: serif thanh mảnh và một dòng chữ thảo
+const serif = Cormorant_Garamond({
+  variable: "--font-serif-face",
+  subsets: ["latin", "vietnamese"],
+  weight: ["600", "700"],
+});
+
+const script = Dancing_Script({
+  variable: "--font-script-face",
+  subsets: ["latin", "vietnamese"],
+  weight: ["600"],
+});
+
 export const metadata: Metadata = {
-  title:
-    "4Chan Homestay – Homestay theo giờ Khâm Thiên, Thanh Xuân, Long Biên",
+  title: "4Chan Homestay – Homestay theo giờ Khâm Thiên, Thanh Xuân, Long Biên",
   description:
     "Homestay theo giờ tại Hà Nội, ba cơ sở ở Khâm Thiên, Thanh Xuân và Long Biên. Tự check-in, riêng tư, sạch sẽ. Từ 249k cho 3 giờ, đặt phòng qua Zalo 0365 247 685.",
   keywords: [
@@ -45,7 +63,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="vi"
-      className={`${beVietnam.variable} ${quicksand.variable} ${hand.variable} antialiased`}
+      className={`${beVietnam.variable} ${quicksand.variable} ${hand.variable} ${serif.variable} ${script.variable} antialiased`}
     >
       <body>{children}</body>
     </html>

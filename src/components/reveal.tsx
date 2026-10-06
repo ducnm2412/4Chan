@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Các hiệu ứng cuộn của trang: hiện dần khi cuộn tới, thanh tiến độ đọc,
-// ảnh nền trôi chậm (parallax) và nút lên đầu trang. Tất cả dùng
+// Các hiệu ứng cuộn của trang: hiện dần mỗi lần cuộn tới (cả hai chiều),
+// thanh tiến độ đọc, header đổi nền và nút lên đầu trang. Tất cả dùng
 // IntersectionObserver và sự kiện scroll thường, vì CSS scroll-driven
 // animation chưa có trên Firefox và Safari.
 export function RevealOnScroll() {
@@ -13,26 +13,35 @@ export function RevealOnScroll() {
   useEffect(() => {
     const targets = document.querySelectorAll(".fc-reveal");
     let observer: IntersectionObserver | undefined;
+    let leaver: IntersectionObserver | undefined;
     if ("IntersectionObserver" in window) {
       observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            if (!entry.isIntersecting) continue;
-            entry.target.classList.add("is-visible");
-            observer?.unobserve(entry.target);
+            if (entry.isIntersecting) entry.target.classList.add("is-visible");
           }
         },
         { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
       );
-      targets.forEach((el) => observer?.observe(el));
+      // Khi phần tử ra hẳn khỏi màn hình thì ẩn lại, để lần cuộn tới sau (kể
+      // cả cuộn ngược lên) hiệu ứng chạy lại. data-from ghi nó đã đi ra phía
+      // nào, CSS dựa vào đó cho nó trượt vào đúng chiều.
+      leaver = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) continue;
+          const el = entry.target as HTMLElement;
+          el.dataset.from = entry.boundingClientRect.top < 0 ? "top" : "bottom";
+          el.classList.remove("is-visible");
+        }
+      });
+      targets.forEach((el) => {
+        observer?.observe(el);
+        leaver?.observe(el);
+      });
     } else {
       targets.forEach((el) => el.classList.add("is-visible"));
     }
 
-    const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const layers = calm
-      ? []
-      : Array.from(document.querySelectorAll<HTMLElement>(".fc-parallax"));
     let frame = 0;
     const update = () => {
       frame = 0;
@@ -45,13 +54,6 @@ export function RevealOnScroll() {
       setShowTop(y > 700);
       // Header cố định đổi sang nền đặc khi đã rời đầu trang (xem .fc-header)
       root.toggleAttribute("data-scrolled", y > 24);
-      for (const layer of layers) {
-        const rect = layer.parentElement?.getBoundingClientRect();
-        if (!rect || rect.bottom < 0 || rect.top > innerHeight) continue;
-        const offset =
-          (rect.top + rect.height / 2 - innerHeight / 2) / innerHeight;
-        layer.style.setProperty("--fc-shift", `${(offset * -70).toFixed(1)}px`);
-      }
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -61,6 +63,7 @@ export function RevealOnScroll() {
     addEventListener("resize", onScroll);
     return () => {
       observer?.disconnect();
+      leaver?.disconnect();
       removeEventListener("scroll", onScroll);
       removeEventListener("resize", onScroll);
       cancelAnimationFrame(frame);
@@ -70,7 +73,9 @@ export function RevealOnScroll() {
   return (
     <>
       <noscript>
-        <style>{".fc-reveal,.fc-reveal .fc-pop{opacity:1;transform:none}"}</style>
+        <style>
+          {".fc-reveal,.fc-reveal .fc-pop{opacity:1;transform:none}"}
+        </style>
       </noscript>
       <div
         ref={bar}
@@ -83,7 +88,7 @@ export function RevealOnScroll() {
         aria-label="Lên đầu trang"
         tabIndex={showTop ? 0 : -1}
         onClick={() => scrollTo({ top: 0, behavior: "smooth" })}
-        className={`fixed right-3 bottom-[calc(84px+env(safe-area-inset-bottom,0px))] z-30 flex size-11 cursor-pointer items-center justify-center rounded-full bg-ink text-xl text-cream shadow-[0_10px_20px_-10px_rgba(0,0,0,0.6)] transition-[opacity,translate] duration-300 nav:right-[34px] nav:bottom-[104px] ${showTop ? "opacity-100" : "pointer-events-none translate-y-3 opacity-0"}`}
+        className={`fixed right-3 bottom-[calc(84px+env(safe-area-inset-bottom,0px))] z-30 flex size-11 cursor-pointer items-center justify-center rounded-full bg-ink text-xl text-cream shadow-[0_10px_20px_-10px_rgba(0,0,0,0.6)] transition-[opacity,translate] duration-500 nav:right-[34px] nav:bottom-[104px] ${showTop ? "opacity-100" : "pointer-events-none translate-y-3 opacity-0"}`}
       >
         ↑
       </button>

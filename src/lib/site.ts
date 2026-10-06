@@ -75,10 +75,15 @@ export const ROOMS = [
   { name: "Phòng Mèo Chill", branch: "Khâm Thiên", type: "Cửa sổ" },
   { name: "Phòng Retro Pop", branch: "Khâm Thiên", type: "Cửa sổ" },
   { name: "Phòng Puzzle Chill", branch: "Khâm Thiên", type: "Cửa sổ" },
-  { name: "Room 702", branch: "Long Biên", type: "Cửa sổ" },
-  { name: "Room 402", branch: "Long Biên", type: "Cửa sổ" },
-  { name: "Room 601", branch: "Long Biên", type: "Ban công" },
+  { name: "Room 201", branch: "Long Biên", type: "Ban công" },
+  { name: "Room 202", branch: "Long Biên", type: "Cửa sổ" },
   { name: "Room 401", branch: "Long Biên", type: "Ban công" },
+  { name: "Room 402", branch: "Long Biên", type: "Cửa sổ" },
+  { name: "Room 501", branch: "Long Biên", type: "Ban công" },
+  { name: "Room 502", branch: "Long Biên", type: "Cửa sổ" },
+  { name: "Room 601", branch: "Long Biên", type: "Ban công" },
+  { name: "Room 602", branch: "Long Biên", type: "Cửa sổ" },
+  { name: "Room 702", branch: "Long Biên", type: "Cửa sổ" },
 ] as const satisfies readonly {
   name: string;
   branch: BranchName;
