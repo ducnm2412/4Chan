@@ -39,7 +39,8 @@
     line-height: 1.6;
   }
   [id] {
-    scroll-margin-top: 24px;
+    /* Chừa chỗ cho header cố định khi nhảy tới một mục */
+    scroll-margin-top: 76px;
   }
   :focus-visible {
     outline: 3px solid var(--color-clay);
@@ -55,6 +56,23 @@
     /* Nội dung nằm trên ảnh nền và lớp phủ màu của section */
     position: relative;
     z-index: 2;
+  }
+  /* Header bám đầu trang: trong suốt khi nằm trên ảnh hero, chuyển sang nền
+     tối và thấp lại khi cuộn xuống. RevealOnScroll gắn data-scrolled. */
+  .fc-header {
+    transition:
+      background-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .fc-header-bar {
+    transition: padding 0.3s ease;
+  }
+  html[data-scrolled] .fc-header {
+    background: rgba(39, 45, 32, 0.94);
+    box-shadow: 0 10px 24px -16px rgba(0, 0, 0, 0.6);
+  }
+  html[data-scrolled] .fc-header-bar {
+    padding-block: 8px;
   }
   .fc-section {
     padding-block: clamp(26px, 3.6vw, 48px);
@@ -285,6 +303,8 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
+    .fc-header,
+    .fc-header-bar,
     .fc-btn,
     .fc-plus,
     .fc-polaroid {

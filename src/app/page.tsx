@@ -254,7 +254,7 @@ export default function Home() {
 
       <section
         id="top"
-        className="fc-ondark relative flex min-h-svh flex-col overflow-hidden bg-deep text-cream nav:h-svh nav:min-h-[600px]"
+        className="fc-ondark relative flex min-h-svh flex-col overflow-hidden bg-deep pt-[84px] text-cream nav:h-svh nav:min-h-[600px]"
       >
         <Image
           src={img.bgHero}
@@ -265,8 +265,8 @@ export default function Home() {
           className="fc-kenburns object-cover object-[center_60%]"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(39,45,32,0.84)_0%,rgba(39,45,32,0.55)_46%,rgba(39,45,32,0.12)_100%)]" />
-        <header className="relative z-2">
-          <div className="fc-container flex items-center justify-between gap-5 py-[18px]">
+        <header className="fc-header fixed inset-x-0 top-0 z-30">
+          <div className="fc-header-bar fc-container flex items-center justify-between gap-5 py-[18px]">
             <Link href="/" aria-label="4Chan Homestay – về trang chủ">
               <Wordmark />
             </Link>
@@ -349,7 +349,6 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <Wave className="absolute inset-x-0 -bottom-px z-1 text-blush" />
       </section>
 
       <div className="fc-container flex justify-center pt-[clamp(18px,2.5vw,30px)]">

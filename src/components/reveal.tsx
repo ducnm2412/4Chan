@@ -43,6 +43,8 @@ export function RevealOnScroll() {
         bar.current.style.transform = `scaleX(${max > 0 ? Math.min(y / max, 1) : 0})`;
       }
       setShowTop(y > 700);
+      // Header cố định đổi sang nền đặc khi đã rời đầu trang (xem .fc-header)
+      root.toggleAttribute("data-scrolled", y > 24);
       for (const layer of layers) {
         const rect = layer.parentElement?.getBoundingClientRect();
         if (!rect || rect.bottom < 0 || rect.top > innerHeight) continue;
