@@ -1,26 +1,314 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Bốn màu nhận diện của 4Chan */
+  --color-cream: #fefaf1;
+  --color-sage: #b5bea3;
+  --color-peach: #c29679;
+  --color-sand: #cbb392;
+  /* Màu trung bình của ảnh nền public/nen.jpg */
+  --color-blush: #f29c88;
+
+  /* Màu phụ suy ra từ bốn màu trên: chữ, nền đậm và nút bấm */
+  --color-ink: #333a2b;
+  --color-deep: #272d20;
+  --color-muted: #5c6351;
+  --color-mist: #cdd3c0;
+  --color-clay: #8a583c;
+  --color-sage-soft: #e9ecdf;
+  --color-sand-soft: #f3ead9;
+  --color-line: #e5dcc8;
+
+  --font-sans: var(--font-be-vietnam), system-ui, sans-serif;
+  --font-display: var(--font-quicksand), system-ui, sans-serif;
+  --font-hand: var(--font-playpen), cursive;
+
+  /* Mốc chuyển giữa giao diện mobile và desktop */
+  --breakpoint-nav: 860px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-blush);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  [id] {
+    scroll-margin-top: 24px;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-clay);
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .fc-container {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: clamp(16px, 5vw, 48px);
+    /* Nội dung nằm trên ảnh nền và lớp phủ màu của section */
+    position: relative;
+    z-index: 2;
+  }
+  .fc-section {
+    padding-block: clamp(26px, 3.6vw, 48px);
+  }
+  .fc-h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(27px, 3.4vw, 40px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .fc-lede {
+    margin-top: 10px;
+    max-width: 34em;
+    color: var(--color-muted);
+  }
+  .fc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding-inline: 22px;
+    border-radius: 999px;
+    background: var(--color-clay);
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    white-space: nowrap;
+    transition:
+      transform 0.15s ease,
+      background-color 0.15s ease;
+  }
+  .fc-btn:hover {
+    transform: translateY(-1px);
+  }
+  .fc-btn-quiet {
+    border: 1.5px solid var(--color-ink);
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .fc-link:hover {
+    color: var(--color-clay);
+  }
+  .fc-ondark a:not(.fc-btn):hover {
+    color: var(--color-sand);
+  }
+  /* Khung vòm lấy từ mảng tường vòm sơn trong phòng. --ar là tỉ lệ rộng/cao
+     của khung, dùng để đỉnh vòm tròn đều thay vì bẹt thành hình elip. */
+  .fc-arch {
+    --ar: 1;
+    --r: 16px;
+    border-radius: 50% 50% var(--r) var(--r) / calc(50% * var(--ar))
+      calc(50% * var(--ar)) var(--r) var(--r);
+  }
+  .fc-field {
+    width: 100%;
+    height: 46px;
+    border: 1px solid #cfd3c2;
+    border-radius: 10px;
+    padding: 0 12px;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--color-ink);
+    background: #fff;
+  }
+  textarea.fc-field {
+    min-height: 46px;
+    padding: 11px 12px;
+    resize: vertical;
+  }
+  /* Form đặt phòng trên desktop dùng ô thấp hơn để cả phần vừa một màn hình;
+     điện thoại giữ ô 46px cho dễ chạm. */
+  @media (min-width: 860px) {
+    .fc-compact .fc-field {
+      height: 40px;
+      font-size: 14px;
+    }
+    .fc-compact textarea.fc-field {
+      min-height: 40px;
+      padding-block: 8px;
+    }
+  }
+  .fc-faq summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .fc-faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .fc-plus {
+    transition: transform 0.15s ease;
+  }
+  .fc-faq[open] .fc-plus {
+    transform: rotate(45deg);
+  }
+  .fc-scroller {
+    scrollbar-width: none;
+  }
+  .fc-scroller::-webkit-scrollbar {
+    display: none;
+  }
+  /* Thẻ nhấc nhẹ khi rê chuột; chỉ áp dụng sau khi thẻ đã hiện ra */
+  .fc-lift.is-visible {
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  .fc-lift.is-visible:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 30px -22px rgba(39, 45, 32, 0.55);
+  }
+  /* Nền hồng đào (public/nen.jpg) cho các phần sáng màu; hai mép mờ về màu
+     trung bình của ảnh để khớp với đường gợn sóng và nền trang. */
+  .fc-paper {
+    background:
+      linear-gradient(
+        var(--color-blush),
+        transparent 90px,
+        transparent calc(100% - 90px),
+        var(--color-blush)
+      ),
+      url("/nen.jpg") center / cover no-repeat;
+  }
+  /* Chữ phụ nằm trực tiếp trên nền hồng dùng màu chữ chính cho dễ đọc */
+  .fc-paper .fc-lede {
+    color: var(--color-ink);
+  }
+  /* Ảnh nền cao hơn section một chút và trôi chậm theo cuộn trang */
+  .fc-parallax {
+    top: -12% !important;
+    height: 124% !important;
+    transform: translate3d(0, var(--fc-shift, 0px), 0);
+    will-change: transform;
+  }
+  .fc-kenburns {
+    animation: fc-kenburns 20s ease-in-out infinite alternate;
+  }
+  @keyframes fc-kenburns {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.07);
+    }
+  }
+  /* Lớp sóng mờ phía sau trôi nhẹ qua lại để mép section trông như đang gợn */
+  .fc-wave-back {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: fc-wave 9s ease-in-out infinite alternate;
+  }
+  @keyframes fc-wave {
+    from {
+      transform: scaleX(1.08) translateX(-3%);
+    }
+    to {
+      transform: scaleX(1.08) translateX(3%);
+    }
+  }
+  /* Hiện dần khi cuộn tới; lớp is-visible do RevealOnScroll gắn vào */
+  .fc-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* Biến thể hướng vào. Chỉ dùng opacity và transform nên chạy mượt trên mọi
+     trình duyệt; trượt ngang chỉ bật trên màn hình rộng để mobile không bị
+     tràn ngang. */
+  .fc-reveal.fc-zoom-in {
+    transform: scale(0.9);
+  }
+  @media (min-width: 860px) {
+    .fc-reveal.fc-from-left {
+      transform: translateX(-48px);
+    }
+    .fc-reveal.fc-from-right {
+      transform: translateX(48px);
+    }
+  }
+  .fc-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  /* Số thứ tự của từng bước nảy lên sau khi thẻ hiện ra */
+  .fc-reveal .fc-pop {
+    transform: scale(0);
+    transform-origin: 50% 100%;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s;
+  }
+  .fc-reveal.is-visible .fc-pop {
+    transform: none;
+  }
+  .fc-polaroid {
+    transition:
+      opacity 0.6s ease,
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      rotate 0.3s ease,
+      scale 0.3s ease;
+  }
+  .fc-polaroid:hover {
+    rotate: 0deg;
+    scale: 1.04;
+    z-index: 1;
+  }
+  .fc-zoomable {
+    cursor: zoom-in;
+  }
+  /* Phần mở đầu trang: chữ trồi lên trước, hai khung vòm mọc lên sau */
+  .fc-rise {
+    animation: fc-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes fc-rise {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+  }
+  /* Chừa chỗ cho thanh đặt phòng cố định trên mobile */
+  .fc-footer {
+    padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 860px) {
+    .fc-footer {
+      padding-bottom: 36px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fc-btn,
+    .fc-plus,
+    .fc-polaroid {
+      transition: none;
+    }
+    .fc-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .fc-reveal .fc-pop {
+      transform: none;
+      transition: none;
+    }
+    .fc-rise,
+    .fc-kenburns,
+    .fc-wave-back {
+      animation: none;
+    }
+    .fc-parallax {
+      transform: none;
+    }
+    html {
+      scroll-behavior: auto;
+    }
+  }
 }
