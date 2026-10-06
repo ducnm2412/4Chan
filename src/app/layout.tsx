@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro, Playpen_Sans, Quicksand } from "next/font/google";
+import { Be_Vietnam_Pro, Patrick_Hand, Quicksand } from "next/font/google";
 import "./globals.css";
 
 const beVietnam = Be_Vietnam_Pro({
@@ -13,10 +13,10 @@ const quicksand = Quicksand({
   subsets: ["latin", "vietnamese"],
 });
 
-const playpen = Playpen_Sans({
-  variable: "--font-playpen",
+const hand = Patrick_Hand({
+  variable: "--font-hand-face",
   subsets: ["latin", "vietnamese"],
-  weight: ["400", "500"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="vi"
-      className={`${beVietnam.variable} ${quicksand.variable} ${playpen.variable} antialiased`}
+      className={`${beVietnam.variable} ${quicksand.variable} ${hand.variable} antialiased`}
     >
       <body>{children}</body>
     </html>

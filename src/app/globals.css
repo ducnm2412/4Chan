@@ -21,7 +21,7 @@
 
   --font-sans: var(--font-be-vietnam), system-ui, sans-serif;
   --font-display: var(--font-quicksand), system-ui, sans-serif;
-  --font-hand: var(--font-playpen), cursive;
+  --font-hand: var(--font-hand-face), cursive;
 
   /* Mốc chuyển giữa giao diện mobile và desktop */
   --breakpoint-nav: 860px;
