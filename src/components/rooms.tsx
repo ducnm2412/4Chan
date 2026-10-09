@@ -107,7 +107,7 @@ export function RoomShowcase() {
                 type="button"
                 aria-pressed={name === branch}
                 onClick={() => pickBranch(name)}
-                className={`min-h-11 cursor-pointer rounded-full border-[1.5px] px-4 text-[14px] font-semibold whitespace-nowrap transition-colors duration-300 max-[479px]:flex-1 min-[400px]:text-[15px] ${name === branch ? "border-ink bg-ink text-cream" : "border-ink/40 hover:bg-ink/10"}`}
+                className={`min-h-11 cursor-pointer rounded-full border-[1.5px] px-4 text-[14px] font-semibold transition-colors duration-300 max-[479px]:flex-1 max-[359px]:px-3 max-[359px]:text-[13px] min-[400px]:text-[15px] ${name === branch ? "border-ink bg-ink text-cream" : "border-ink/40 hover:bg-ink/10"}`}
               >
                 Cơ sở {name}
               </button>

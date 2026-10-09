@@ -48,6 +48,12 @@
   .lenis.lenis-smooth iframe {
     pointer-events: none;
   }
+  /* Chặn tràn ngang ở cả html lẫn body: trình duyệt điện thoại chỉ ngừng
+     giãn khung nhìn theo nội dung khi html bị chặn. */
+  html,
+  body {
+    overflow-x: clip;
+  }
   body {
     background: var(--color-blush);
     color: var(--color-ink);

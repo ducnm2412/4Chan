@@ -605,7 +605,7 @@ function Wordmark() {
         sizes="48px"
         className="size-12 rounded-[14px] bg-cream object-contain p-1"
       />
-      <span className="flex flex-col leading-none">
+      <span className="flex flex-col leading-none max-[359px]:hidden">
         <span className="font-display text-[26px] font-bold tracking-[-0.01em]">
           4Chan
         </span>
@@ -696,7 +696,7 @@ export default function Home() {
           shade="bg-[radial-gradient(ellipse_at_center,rgba(39,45,32,0.86)_0%,rgba(39,45,32,0.7)_45%,rgba(39,45,32,0.42)_100%)]"
         />
         <header className="fc-header fixed inset-x-0 top-0 z-30">
-          <div className="fc-header-bar fc-container flex items-center justify-between gap-5 py-[18px]">
+          <div className="fc-header-bar fc-container flex items-center justify-between gap-3 py-[18px] nav:gap-5">
             <a href="#top" aria-label="4Chan Homestay – về đầu trang">
               <Wordmark />
             </a>
