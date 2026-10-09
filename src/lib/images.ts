@@ -1,4 +1,6 @@
 import bep402 from "../../public/images/bep-402.jpg";
+import bep601 from "../../public/images/bep-601.jpg";
+import phongTam601 from "../../public/images/phong-tam-601.jpg";
 import logoMark from "../../public/images/logo-mark.jpg";
 import mayBanCong from "../../public/images/may-ban-cong.jpg";
 import mayBep from "../../public/images/may-bep.jpg";
@@ -45,6 +47,8 @@ export const img = {
   poster702,
   room502,
   bep402,
+  bep601,
+  phongTam601,
   logoMark,
   mayBanCong,
   mayBep,

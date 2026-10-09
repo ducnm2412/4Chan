@@ -302,9 +302,46 @@
       transform: translateX(48px);
     }
   }
+  /* Biến thể chậm hơn cho các phần mới: trôi lên từ xa hơn, lâu hơn */
+  .fc-reveal.fc-slow {
+    transform: translateY(44px);
+    transition:
+      opacity 1.6s ease,
+      transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .fc-reveal.fc-slow[data-from="top"] {
+    transform: translateY(-44px);
+  }
+  .fc-reveal.fc-slow.fc-zoom-in {
+    transform: scale(0.92) translateY(20px);
+  }
+  @media (min-width: 860px) {
+    .fc-reveal.fc-slow.fc-from-left {
+      transform: translateX(-64px);
+    }
+    .fc-reveal.fc-slow.fc-from-right {
+      transform: translateX(64px);
+    }
+  }
   .fc-reveal.is-visible {
     opacity: 1;
     transform: none;
+  }
+  /* Ba lớp để thắng các biến thể fc-slow ở trên */
+  .fc-reveal.fc-slow.is-visible {
+    transform: none;
+  }
+  /* Đường kẻ nối các mốc tự vẽ từ trái sang phải khi khối hiện ra */
+  .fc-draw {
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 2.6s cubic-bezier(0.65, 0, 0.35, 1) 0.4s;
+  }
+  .fc-reveal.is-visible .fc-draw {
+    stroke-dashoffset: 0;
+  }
+  /* Section có mép trên bo tròn đè lên section trước, như tờ giấy đặt chồng */
+  .fc-overlap {
+    box-shadow: 0 -18px 40px -30px rgba(39, 45, 32, 0.5);
   }
   /* Số thứ tự của từng bước nảy lên sau khi thẻ hiện ra */
   .fc-reveal .fc-pop {
@@ -429,6 +466,10 @@
     }
     .fc-reveal .fc-pop {
       transform: none;
+      transition: none;
+    }
+    .fc-draw {
+      stroke-dashoffset: 0;
       transition: none;
     }
     .fc-rise,

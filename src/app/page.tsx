@@ -1,6 +1,7 @@
 import Image, { type StaticImageData } from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import { BookingForm, BookingProvider } from "@/components/booking";
+import { CountUp } from "@/components/count-up";
 import { Lightbox } from "@/components/lightbox";
 import { MobileMenu } from "@/components/mobile-menu";
 import { Preloader } from "@/components/preloader";
@@ -14,6 +15,7 @@ import {
   MAPS_EMBED,
   PACKAGES,
   ROOM_TYPES,
+  ROOMS,
   SITE,
   WEEKEND_SURCHARGE,
   type BranchName,
@@ -149,6 +151,355 @@ const moments = [
     label: "Trà chiều nhà mèo",
   },
 ];
+
+// Ba bước từ lúc nhắn tin tới lúc vào phòng
+const steps = [
+  {
+    title: "Nhắn Zalo giữ phòng",
+    text: "Chọn cơ sở, phòng và gói giờ rồi nhắn cho 4Chan. Có phòng là chốt ngay.",
+  },
+  {
+    title: "Nhận hướng dẫn check-in",
+    text: "Trước giờ nhận phòng, bạn nhận địa chỉ chi tiết và mã cửa qua Zalo.",
+  },
+  {
+    title: "Tự vào phòng, tự trả phòng",
+    text: "Không qua lễ tân. Hết giờ, bạn chỉ cần khép cửa lại là xong.",
+  },
+];
+
+// Số liệu lấy từ dữ liệu thật của trang
+const stats = [
+  { value: BRANCHES.length, unit: "", label: "cơ sở ở Hà Nội" },
+  { value: ROOMS.length, unit: "", label: "phòng, mỗi phòng một phong cách" },
+  { value: PACKAGES[0].prices[0], unit: "k", label: "giá từ, cho gói 3 giờ" },
+  { value: 24, unit: "/7", label: "tự check-in bất kể giờ nào" },
+];
+
+const amenities = [
+  {
+    title: "Máy chiếu màn lớn",
+    text: "Xem phim ngay trên giường, có sẵn Netflix và YouTube.",
+    icon: (
+      <>
+        <rect x="3" y="5" width="18" height="12" rx="2" />
+        <path d="M8 21h8M12 17v4" />
+      </>
+    ),
+  },
+  {
+    title: "Đệm cao su non",
+    text: "Nằm êm, không lún, ga gối thay mới sau mỗi lượt khách.",
+    icon: (
+      <>
+        <path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6" />
+        <path d="M5 10V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M3 18h18M3 21v-3M21 21v-3" />
+      </>
+    ),
+  },
+  {
+    title: "Bếp mini và tủ lạnh",
+    text: "Bếp từ, nồi chảo, bát đĩa. Nấu được bữa nhỏ cho hai người.",
+    icon: (
+      <>
+        <rect x="4" y="3" width="16" height="18" rx="2" />
+        <path d="M4 10h16M9 6v1M9 14v2" />
+      </>
+    ),
+  },
+  {
+    title: "Máy lạnh hai chiều",
+    text: "Mát mùa hè, ấm mùa đông, điều khiển ngay đầu giường.",
+    icon: (
+      <>
+        <rect x="3" y="6" width="18" height="8" rx="2" />
+        <path d="M7 10h.01M7 17l-1 3M12 17v3M17 17l1 3" />
+      </>
+    ),
+  },
+  {
+    title: "Toilet khép kín",
+    text: "Nước nóng, khăn tắm, dầu gội và sữa tắm có sẵn.",
+    icon: (
+      <>
+        <path d="M4 12h16v2a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6v-2z" />
+        <path d="M6 12V5a2 2 0 0 1 2-2h1M16 7l2-2 2 2" />
+      </>
+    ),
+  },
+  {
+    title: "Wifi và khoá mã số",
+    text: "Mạng mạnh, cửa khoá mã riêng cho từng lượt ở.",
+    icon: (
+      <>
+        <path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0" />
+        <circle cx="12" cy="19.5" r="1" />
+        <path d="M2 8.5a15 15 0 0 1 20 0" />
+      </>
+    ),
+  },
+];
+
+const houseRules = [
+  { ok: true, text: "Mang theo CCCD để xác nhận khi cần" },
+  { ok: true, text: "Giữ phòng yên tĩnh sau 22h" },
+  { ok: true, text: "Đồ ăn mang vào thoải mái, dọn gọn trước khi về" },
+  { ok: false, text: "Không hút thuốc trong phòng" },
+  { ok: false, text: "Không mang thú cưng" },
+  { ok: false, text: "Không tụ tập quá số người đã báo" },
+];
+
+function HowItWorks() {
+  return (
+    <section
+      id="cach-dat"
+      className="fc-ondark relative overflow-hidden bg-deep pt-[clamp(56px,7vw,100px)] pb-[clamp(72px,9vw,130px)] text-cream"
+    >
+      <Wave flip className="absolute inset-x-0 -top-px text-blush" />
+      {/* Mép dưới cắt chéo, dẫn sang nền kem của phần chọn phòng */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 h-[clamp(28px,5vw,72px)] bg-sand-soft [clip-path:polygon(0_100%,100%_0,100%_100%)]"
+      />
+      <div className="fc-container">
+        <div className="grid gap-x-12 gap-y-4 nav:grid-cols-[1fr_auto] nav:items-end">
+          <div>
+            <p className="fc-reveal fc-slow font-hand text-[20px] text-sand">
+              Cách đặt phòng
+            </p>
+            <h2 className="fc-reveal fc-slow fc-from-left fc-h2 mt-1 max-w-[16em]">
+              Từ tin nhắn tới lúc khép cửa, chỉ ba bước
+            </h2>
+          </div>
+          <a
+            className="fc-btn fc-reveal fc-slow fc-from-right justify-self-start bg-cream px-7 text-ink nav:justify-self-end"
+            href={SITE.zalo}
+            target="_blank"
+            rel="noopener"
+          >
+            Nhắn Zalo ngay
+          </a>
+        </div>
+
+        {/* Dòng thời gian: đường kẻ tự vẽ qua ba mốc khi cuộn tới */}
+        <ol className="fc-reveal fc-slow relative mt-12 grid gap-10 nav:mt-16 nav:grid-cols-3 nav:gap-8">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 100 1"
+            preserveAspectRatio="none"
+            className="absolute top-[26px] left-[16.6%] hidden h-[2px] w-[66.8%] nav:block"
+          >
+            <line
+              x1="0"
+              y1="0.5"
+              x2="100"
+              y2="0.5"
+              pathLength={1}
+              className="fc-draw"
+              stroke="currentColor"
+              strokeOpacity="0.4"
+              strokeWidth="1"
+              strokeDasharray="0.012 0.012"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
+          {steps.map((step, i) => (
+            <li
+              key={step.title}
+              style={{ transitionDelay: `${300 + i * 420}ms` }}
+              className="fc-reveal fc-slow relative flex gap-5 nav:flex-col nav:items-center nav:text-center"
+            >
+              <span
+                aria-hidden="true"
+                className="fc-pop relative z-1 flex size-[52px] shrink-0 items-center justify-center rounded-full border-2 border-sand bg-deep font-serif text-[22px] font-bold text-sand"
+              >
+                0{i + 1}
+              </span>
+              <div className="nav:mt-5">
+                <h3 className="font-display text-[20px] leading-tight font-bold">
+                  {step.title}
+                </h3>
+                <p className="mt-2 max-w-[26em] text-[15px] text-cream/75">
+                  {step.text}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <dl className="mt-14 grid grid-cols-2 divide-cream/15 overflow-hidden rounded-[24px] border border-cream/15 bg-cream/5 nav:mt-20 nav:grid-cols-4 nav:divide-x">
+          {stats.map((stat, i) => (
+            <div
+              key={stat.label}
+              style={{ transitionDelay: `${i * 160}ms` }}
+              className={`fc-reveal fc-slow px-5 py-6 max-nav:border-cream/15 nav:px-7 ${i % 2 === 1 ? "max-nav:border-l" : ""} ${i >= 2 ? "max-nav:border-t" : ""}`}
+            >
+              <dd className="font-serif text-[clamp(38px,4.4vw,56px)] leading-none font-bold tracking-[-0.02em] text-sand">
+                <CountUp value={stat.value} />
+                {stat.unit}
+              </dd>
+              <dt className="mt-2 text-[14px] text-cream/75 sm:text-[15px]">
+                {stat.label}
+              </dt>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  );
+}
+
+// Ô ảnh chen giữa các ô tiện nghi trong lưới bento
+const amenityShots = [
+  { src: img.bep601, alt: "Bếp mini Room 601 với bếp từ và tủ lạnh nhỏ" },
+  { src: img.phongTam601, alt: "Phòng tắm khép kín Room 601" },
+];
+
+function Amenities() {
+  // Màu nền xen kẽ cho các ô chữ
+  const tones = ["bg-white", "bg-sage-soft", "bg-sand-soft"];
+  return (
+    <section
+      id="tien-nghi"
+      className="fc-paper fc-overlap relative z-3 -mt-[clamp(24px,4vw,56px)] rounded-t-[clamp(32px,5vw,64px)] pt-[clamp(44px,6vw,84px)] pb-[clamp(36px,5vw,72px)]"
+    >
+      <div className="fc-container">
+        <div className="mx-auto max-w-[36em] text-center">
+          <p className="fc-reveal fc-slow font-hand text-[20px] text-clay">
+            Tiện nghi
+          </p>
+          <h2 className="fc-reveal fc-slow fc-zoom-in fc-h2 mt-1">
+            Mọi phòng đều có sẵn
+          </h2>
+          <p className="fc-reveal fc-slow fc-lede mx-auto">
+            Không phải hỏi trước, không phải mang theo. Đến là ở.
+          </p>
+        </div>
+
+        <ul className="mt-10 grid grid-cols-2 gap-3 nav:grid-cols-4 nav:grid-rows-[repeat(3,minmax(0,1fr))] nav:gap-4">
+          {/* Ô ảnh lớn bên trái, chiếm hai hàng */}
+          <li
+            className="fc-reveal fc-slow fc-from-left relative col-span-2 overflow-hidden rounded-[24px] max-nav:aspect-[16/10] nav:col-span-1 nav:row-span-2"
+          >
+            <Image
+              src={amenityShots[0].src}
+              alt={amenityShots[0].alt}
+              fill
+              sizes="(min-width: 860px) 300px, 100vw"
+              className="fc-zoomable object-cover"
+            />
+          </li>
+          {amenities.slice(0, 4).map((a, i) => (
+            <AmenityTile key={a.title} a={a} tone={tones[i % 3]} delay={i} />
+          ))}
+          <li className="fc-reveal fc-slow fc-from-right relative overflow-hidden rounded-[24px] max-nav:aspect-square nav:col-start-4 nav:row-span-2 nav:row-start-2">
+            <Image
+              src={amenityShots[1].src}
+              alt={amenityShots[1].alt}
+              fill
+              sizes="(min-width: 860px) 300px, 50vw"
+              className="fc-zoomable object-cover"
+            />
+          </li>
+          {amenities.slice(4).map((a, i) => (
+            <AmenityTile
+              key={a.title}
+              a={a}
+              tone={tones[(i + 1) % 3]}
+              delay={i + 4}
+            />
+          ))}
+          <li className="fc-reveal fc-slow fc-zoom-in flex flex-col justify-between rounded-[24px] bg-ink p-5 text-cream">
+            <span className="font-hand text-[18px] text-sand">
+              Và còn nữa
+            </span>
+            <p className="mt-3 text-[14px] leading-snug text-cream/80 sm:text-[15px]">
+              Máy sấy tóc, bàn là, nước lọc, dép đi trong phòng.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+function AmenityTile({
+  a,
+  tone,
+  delay,
+}: {
+  a: (typeof amenities)[number];
+  tone: string;
+  delay: number;
+}) {
+  return (
+    <li
+      style={{ transitionDelay: `${delay * 150}ms` }}
+      className={`fc-reveal fc-slow fc-zoom-in fc-lift flex flex-col justify-between gap-4 rounded-[24px] p-5 ${tone}`}
+    >
+      <Icon size={30} width={1.6}>
+        {a.icon}
+      </Icon>
+      <div>
+        <h3 className="font-display text-[16px] leading-tight font-bold sm:text-[17px]">
+          {a.title}
+        </h3>
+        <p className="mt-1 text-[13px] leading-snug text-muted sm:text-[14px]">
+          {a.text}
+        </p>
+      </div>
+    </li>
+  );
+}
+
+function HouseRules() {
+  return (
+    <section
+      id="luu-y"
+      className="fc-paper fc-overlap relative z-3 -mt-[clamp(20px,3vw,40px)] rounded-t-[clamp(32px,5vw,64px)] bg-sand-soft pt-[clamp(40px,5vw,72px)] pb-[clamp(28px,3.6vw,48px)]"
+    >
+      <div className="fc-container grid items-center gap-x-[clamp(28px,5vw,72px)] gap-y-8 nav:grid-cols-[1fr_1.1fr]">
+        <div className="fc-reveal fc-slow fc-from-left relative">
+          <Image
+            src={img.room601}
+            alt="Room 601: giường xám và ghế bành cạnh cửa kính ra ban công"
+            quality={90}
+            sizes="(min-width: 860px) 480px, 100vw"
+            className="fc-zoomable aspect-[4/5] w-full rounded-[28px] object-cover nav:aspect-[4/4.6]"
+          />
+          <p className="absolute -right-2 bottom-6 rotate-[-3deg] rounded-full bg-cream px-4 py-1.5 font-hand text-[18px] text-ink shadow-[0_14px_24px_-14px_rgba(39,45,32,0.6)] nav:right-[-14px]">
+            Phòng của bạn, trong vài giờ
+          </p>
+        </div>
+        <div>
+          <h2 className="fc-reveal fc-slow fc-from-right fc-h2">
+            Vài lưu ý nhỏ để buổi hẹn trọn vẹn
+          </h2>
+          <p className="fc-reveal fc-slow fc-from-right fc-lede">
+            Nhà nhỏ, khách tự vào tự ra, nên mình nhờ bạn vài điều.
+          </p>
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+            {houseRules.map((rule, i) => (
+              <li
+                key={rule.text}
+                style={{ transitionDelay: `${i * 140}ms` }}
+                className="fc-reveal fc-slow fc-from-right flex items-start gap-3 rounded-[16px] bg-white/70 px-4 py-3"
+              >
+                <span
+                  aria-hidden="true"
+                  className={`mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full text-[13px] font-bold ${rule.ok ? "bg-sage text-ink" : "bg-peach text-white"}`}
+                >
+                  {rule.ok ? "✓" : "×"}
+                </span>
+                <span className="text-[15px] leading-snug">{rule.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function DateIdeas() {
   return (
@@ -484,7 +835,11 @@ export default function Home() {
         </div>
       </section>
 
+      <HowItWorks />
+
       <RoomShowcase />
+
+      <Amenities />
 
       <section id="bang-gia" className="fc-paper fc-section">
         <div className="fc-container grid items-start gap-x-[clamp(28px,4vw,56px)] gap-y-7 nav:grid-cols-[0.78fr_1.6fr]">
@@ -676,6 +1031,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <HouseRules />
 
       <section className="fc-ondark relative overflow-hidden bg-deep pt-[clamp(44px,5vw,64px)] pb-[clamp(32px,3.4vw,44px)]">
         <PhotoWall shade="bg-deep/85" />
