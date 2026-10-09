@@ -2,8 +2,11 @@ import Image, { type StaticImageData } from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import { BookingForm, BookingProvider } from "@/components/booking";
 import { Lightbox } from "@/components/lightbox";
+import { MobileMenu } from "@/components/mobile-menu";
+import { Preloader } from "@/components/preloader";
 import { RevealOnScroll } from "@/components/reveal";
 import { RoomShowcase } from "@/components/rooms";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { img } from "@/lib/images";
 import {
   BRANCHES,
@@ -16,6 +19,13 @@ import {
   type BranchName,
 } from "@/lib/site";
 
+const navLinks = [
+  { href: "#gioi-thieu", label: "Giới thiệu" },
+  { href: "#phong", label: "Loại phòng" },
+  { href: "#bang-gia", label: "Bảng giá" },
+  { href: "#co-so", label: "Cơ sở" },
+];
+
 const branchCards: Record<
   BranchName,
   { image?: StaticImageData; alt?: string; position?: string }
@@ -25,7 +35,12 @@ const branchCards: Record<
     alt: "Ban công phòng Mây Chill ở cơ sở Khâm Thiên",
     position: "object-[85%_center]",
   },
-  "Thanh Xuân": {},
+  // Chưa có ảnh thật của cơ sở này nên dùng tạm ảnh một phòng ở Long Biên
+  "Thanh Xuân": {
+    image: img.room202,
+    alt: "Ảnh minh hoạ phòng 4Chan Homestay: giường khung cam dưới mảng tường vòm",
+    position: "object-[30%_center]",
+  },
   "Long Biên": {
     image: img.room601,
     alt: "Room 601 ở cơ sở Long Biên, cửa kính mở ra ban công",
@@ -316,6 +331,8 @@ function Wave({ className, flip }: { className: string; flip?: boolean }) {
 export default function Home() {
   return (
     <BookingProvider>
+      <Preloader />
+      <SmoothScroll />
       <RevealOnScroll />
       <Lightbox />
 
@@ -336,18 +353,11 @@ export default function Home() {
               aria-label="Điều hướng chính"
               className="hidden gap-[30px] text-[15px] font-medium nav:flex"
             >
-              <a className="fc-link" href="#gioi-thieu">
-                Giới thiệu
-              </a>
-              <a className="fc-link" href="#phong">
-                Loại phòng
-              </a>
-              <a className="fc-link" href="#bang-gia">
-                Bảng giá
-              </a>
-              <a className="fc-link" href="#co-so">
-                Cơ sở
-              </a>
+              {navLinks.map((l) => (
+                <a key={l.href} className="fc-link" href={l.href}>
+                  {l.label}
+                </a>
+              ))}
             </nav>
             <div className="flex items-center gap-3.5">
               <a
@@ -359,6 +369,11 @@ export default function Home() {
               <a className="fc-btn" href="#dat-phong">
                 Đặt phòng
               </a>
+              <MobileMenu
+                links={navLinks}
+                phone={SITE.phone}
+                phoneDisplay={SITE.phoneDisplay}
+              />
             </div>
           </div>
         </header>

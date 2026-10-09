@@ -51,6 +51,7 @@ export function RoomShowcase() {
   }>({ cur: 0, prev: null });
   const [auto, setAuto] = useState(true);
   const touchX = useRef<number | null>(null);
+  const strip = useRef<HTMLUListElement>(null);
 
   const list = ROOMS.filter((r) => r.branch === branch);
   const count = list.length;
@@ -64,6 +65,19 @@ export function RoomShowcase() {
     );
     return () => clearTimeout(timer);
   }, [auto, cur, count]);
+
+  // Trên mobile dải ảnh nhỏ trượt ngang: đưa ảnh đang chọn vào giữa dải.
+  // Chỉ cuộn ngang bên trong dải nên trang không bị kéo theo.
+  useEffect(() => {
+    const ul = strip.current;
+    const item = ul?.children[cur];
+    if (!ul || !(item instanceof HTMLElement)) return;
+    if (ul.scrollWidth <= ul.clientWidth) return;
+    ul.scrollTo({
+      left: item.offsetLeft - (ul.clientWidth - item.offsetWidth) / 2,
+      behavior: "smooth",
+    });
+  }, [cur, branch]);
 
   const go = (to: number) => {
     setAuto(false);
@@ -137,7 +151,9 @@ export function RoomShowcase() {
         </div>
 
         <div className="fc-reveal fc-from-right min-w-0 nav:col-start-2 nav:self-start">
-          <div className="flex flex-wrap items-end justify-between gap-x-5 gap-y-3 nav:mt-2">
+          {/* Tên phòng và cụm nút luôn xếp hai hàng: tên dài ngắn khác nhau nên
+              nếu để chung một hàng, cụm nút sẽ lúc nằm cạnh lúc rớt xuống dưới */}
+          <div className="flex flex-col items-start gap-3 nav:mt-2">
             <div key={room.name} aria-live="polite" className="fc-rise">
               <h3 className="font-display text-[clamp(26px,3.2vw,42px)] leading-[1.05] font-bold tracking-[-0.01em]">
                 {room.name}
@@ -167,11 +183,13 @@ export function RoomShowcase() {
             </div>
           </div>
 
+          {/* Mobile: một dải trượt ngang, hít vào từng ảnh. Desktop: lưới. */}
           <ul
-            className={`mt-5 grid gap-x-2.5 gap-y-3 border-t border-ink/15 pt-5 ${count > 4 ? "grid-cols-5" : "grid-cols-4"}`}
+            ref={strip}
+            className={`fc-scroller relative mt-5 flex snap-x snap-mandatory scroll-px-1 gap-2.5 overflow-x-auto border-t border-ink/15 px-1 pt-5 pb-1 nav:grid nav:snap-none nav:gap-y-3 nav:overflow-visible nav:px-0 nav:pb-0 ${count > 4 ? "nav:grid-cols-5" : "nav:grid-cols-4"}`}
           >
             {list.map((r, i) => (
-              <li key={r.name}>
+              <li key={r.name} className="w-[88px] shrink-0 snap-start nav:w-auto">
                 <button
                   type="button"
                   aria-pressed={i === cur}
@@ -189,7 +207,7 @@ export function RoomShowcase() {
                       className="object-cover"
                     />
                   </span>
-                  <span className="mt-1.5 block text-[12px] leading-tight font-semibold min-[480px]:text-[13px]">
+                  <span className="mt-1.5 block text-[12px] leading-tight font-semibold whitespace-nowrap min-[480px]:text-[13px] nav:whitespace-normal">
                     {r.name.replace("Phòng ", "")}
                   </span>
                 </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { scrollToTop } from "@/lib/scroll";
 
 // Các hiệu ứng cuộn của trang: hiện dần mỗi lần cuộn tới (cả hai chiều),
 // thanh tiến độ đọc, header đổi nền và nút lên đầu trang. Tất cả dùng
@@ -87,7 +88,7 @@ export function RevealOnScroll() {
         type="button"
         aria-label="Lên đầu trang"
         tabIndex={showTop ? 0 : -1}
-        onClick={() => scrollTo({ top: 0, behavior: "smooth" })}
+        onClick={scrollToTop}
         className={`fixed right-3 bottom-[calc(84px+env(safe-area-inset-bottom,0px))] z-30 flex size-11 cursor-pointer items-center justify-center rounded-full bg-ink text-xl text-cream shadow-[0_10px_20px_-10px_rgba(0,0,0,0.6)] transition-[opacity,translate] duration-500 nav:right-[34px] nav:bottom-[104px] ${showTop ? "opacity-100" : "pointer-events-none translate-y-3 opacity-0"}`}
       >
         ↑
